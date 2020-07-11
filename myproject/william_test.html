@@ -48,18 +48,20 @@
 
       //创建相机添加Camera和Controls-------------------------------------------------------
 			var camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 100 );
-			camera.position.set( -2.5, 2.5, 2.5 );
+			camera.position.set( -3, 3, 3 );
 
 			var controls = new OrbitControls( camera, renderer.domElement );
 			controls.target.set( 0, 0.7, 0 );
 			controls.enablePan = false;
+      controls.minDistance = 0;
+      controls.maxDistance = 30;
 
       //创建场景添加场景物体-------------------------------------------------------
       var scene = new THREE.Scene();
 			scene.background = new THREE.Color( 0x202020 );
 
-      var axisHelper = new THREE.AxesHelper(1);
-      scene.add(axisHelper);
+      // var axisHelper = new THREE.AxesHelper(2);
+      // scene.add(axisHelper);
 
       var gridHelper = new THREE.GridHelper( 10, 10 );
       scene.add( gridHelper );
@@ -68,19 +70,18 @@
 			scene.add( new THREE.AmbientLight( 0x404040 ) );
 
 			var pointLight = new THREE.PointLight( 0xffffff, 1 );
-			pointLight.position.x = 5;
-      pointLight.position.y = 5;
-      pointLight.position.z = 5;
+      pointLight.position.set( 5, 5, 5 );
 			scene.add( pointLight );
-      var sphereSize = 1;
-      var pointLightHelper = new THREE.PointLightHelper( pointLight, sphereSize );
+      var pointLightHelper = new THREE.PointLightHelper( pointLight, 0.2 );
       scene.add( pointLightHelper );
 
       //-------------------------------------------------------
-      // var geometry = new THREE.PlaneBufferGeometry( 1, 1, 1 );
-      // var material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
-      // var plane = new THREE.Mesh( geometry, material );
-      // scene.add( plane );
+      var geometry = new THREE.PlaneBufferGeometry( 1, 1, 1 );
+      var material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
+      var plane = new THREE.Mesh( geometry, material );
+      plane.scale.set(8,8,8);
+      plane.rotation.set(3.1415926/2,0,0);
+      scene.add( plane );
 
       // var geometry = new THREE.BoxBufferGeometry( 1, 1, 1 );
       // var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
@@ -94,10 +95,8 @@
         var material = new THREE.MeshLambertMaterial( { color: 0xffffff } );
         var mesh = new THREE.Mesh( geometry, material );
 
-        mesh.position.x = 0.3;
-        mesh.position.y = -0.35;
-        mesh.position.z = -0.13;
-        mesh.scale.multiplyScalar( 10 );
+        mesh.position.set(0.3,-0.35,-0.13);
+        mesh.scale.set( 10,10,10 );
 
         mesh.castShadow = true;
         mesh.receiveShadow = true;
@@ -115,6 +114,7 @@
 				controls.update( delta );
 
 				renderer.render( scene, camera );
+        console.log("$$$$$$");
 
 			}
 
