@@ -20,7 +20,8 @@
 		<div id="container"></div>
 
 		<div id="info">
-			<a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> webgl - static - mesh<br/>
+			<!-- <a href="https://threejs.org" target="_blank" rel="noopener">three.js</a>  -->
+      webgl - static - mesh<br/>
 			Model: “Stanford Bunny” comes from
 			<a href="http://graphics.stanford.edu/data/3Dscanrep/" target="_blank" rel="noopener">Stanford University Computer Graphics Laboratory</a>, CC Attribution.
 		</div>
@@ -32,101 +33,108 @@
 			import { OrbitControls } from '../examples/jsm/controls/OrbitControls.js';
 			import { PLYLoader } from '../examples/jsm/loaders/PLYLoader.js';
 
-			var clock = new THREE.Clock();
+      var clock, camera, scene, renderer, controls, stats;
 
-      //创建容器添加Stats和Renderer-------------------------------------------------------
-			var container = document.getElementById( 'container' );
+      function init(){
+  			clock = new THREE.Clock();
 
-			var stats = new Stats();
-			container.appendChild( stats.dom );
+        //创建容器添加Stats和Renderer-------------------------------------------------------
+  			var container = document.getElementById( 'container' );
 
-			var renderer = new THREE.WebGLRenderer( { antialias: true } );
-			renderer.setPixelRatio( window.devicePixelRatio );
-			renderer.setSize( window.innerWidth, window.innerHeight );
-			renderer.outputEncoding = THREE.sRGBEncoding;
-			container.appendChild( renderer.domElement );
+  			stats = new Stats();
+  			container.appendChild( stats.dom );
 
-      //创建相机添加Camera和Controls-------------------------------------------------------
-			var camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 100 );
-			camera.position.set( -3, 3, 3 );
+  			renderer = new THREE.WebGLRenderer( { antialias: true } );
+  			renderer.setPixelRatio( window.devicePixelRatio );
+  			renderer.setSize( window.innerWidth, window.innerHeight );
+  			renderer.outputEncoding = THREE.sRGBEncoding;
+  			container.appendChild( renderer.domElement );
 
-			var controls = new OrbitControls( camera, renderer.domElement );
-			controls.target.set( 0, 0.7, 0 );
-			controls.enablePan = false;
-      controls.minDistance = 0;
-      controls.maxDistance = 30;
+        //创建相机添加Camera和Controls-------------------------------------------------------
+  			camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 100 );
+  			camera.position.set( -3, 3, 3 );
 
-      //创建场景添加场景物体-------------------------------------------------------
-      var scene = new THREE.Scene();
-			scene.background = new THREE.Color( 0x202020 );
+  			controls = new OrbitControls( camera, renderer.domElement );
+  			controls.target.set( 0, 0.7, 0 );
+  			controls.enablePan = false;
+        controls.minDistance = 0;
+        controls.maxDistance = 30;
 
-      // var axisHelper = new THREE.AxesHelper(2);
-      // scene.add(axisHelper);
+        //创建场景添加场景物体-------------------------------------------------------
+        scene = new THREE.Scene();
+  			scene.background = new THREE.Color( 0x202020 );
 
-      var gridHelper = new THREE.GridHelper( 10, 10 );
-      scene.add( gridHelper );
+        // var axisHelper = new THREE.AxesHelper(2);
+        // scene.add(axisHelper);
 
-      //-------------------------------------------------------
-			scene.add( new THREE.AmbientLight( 0x404040 ) );
+        var gridHelper = new THREE.GridHelper( 10, 10 );
+        scene.add( gridHelper );
 
-			var pointLight = new THREE.PointLight( 0xffffff, 1 );
-      pointLight.position.set( 5, 5, 5 );
-			scene.add( pointLight );
-      var pointLightHelper = new THREE.PointLightHelper( pointLight, 0.2 );
-      scene.add( pointLightHelper );
+        //-------------------------------------------------------
+  			scene.add( new THREE.AmbientLight( 0x404040 ) );
 
-      //-------------------------------------------------------
-      var geometry = new THREE.PlaneBufferGeometry( 1, 1, 1 );
-      var material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
-      var plane = new THREE.Mesh( geometry, material );
-      plane.scale.set(8,8,8);
-      plane.rotation.set(3.1415926/2,0,0);
-      scene.add( plane );
+  			var pointLight = new THREE.PointLight( 0xffffff, 1 );
+        pointLight.position.set( 2, 2, 2 );
+  			scene.add( pointLight );
+        var pointLightHelper = new THREE.PointLightHelper( pointLight, 0.2 );
+        scene.add( pointLightHelper );
 
-      // var geometry = new THREE.BoxBufferGeometry( 1, 1, 1 );
-      // var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
-      // var cube = new THREE.Mesh( geometry, material );
-      // scene.add( cube );
+        //-------------------------------------------------------
+        var geometry = new THREE.PlaneBufferGeometry( 1, 1, 1 );
+        var material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
+        var plane = new THREE.Mesh( geometry, material );
+        plane.scale.set(8,8,8);
+        plane.rotation.set(Math.PI/2,0,0);
+        scene.add( plane );
 
-      var loader = new PLYLoader();
-      loader.load( '../bunny/reconstruction/bun_zipper.ply', function ( geometry ) {
-        geometry.computeVertexNormals();
+        // var geometry = new THREE.BoxBufferGeometry( 1, 1, 1 );
+        // var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
+        // var cube = new THREE.Mesh( geometry, material );
+        // scene.add( cube );
 
-        var material = new THREE.MeshLambertMaterial( { color: 0xffffff } );
-        var mesh = new THREE.Mesh( geometry, material );
+        var loader = new PLYLoader();
+        loader.load( '../bunny/reconstruction/bun_zipper.ply', function ( geometry ) {
+          geometry.computeVertexNormals();
 
-        mesh.position.set(0.3,-0.35,-0.13);
-        mesh.scale.set( 10,10,10 );
+          var material = new THREE.MeshLambertMaterial( { color: 0xffffff } );
+          var mesh = new THREE.Mesh( geometry, material );
 
-        mesh.castShadow = true;
-        mesh.receiveShadow = true;
+          mesh.position.set(0.3,-0.35,-0.13);
+          mesh.scale.set( 10,10,10 );
 
-        scene.add( mesh );
+          mesh.castShadow = true;
+          mesh.receiveShadow = true;
 
-      } );
+          scene.add( mesh );
 
-			function animate() {
-				requestAnimationFrame( animate );
+        } );
+      }
 
-        stats.update();
-
-				var delta = clock.getDelta();
-				controls.update( delta );
-
-				renderer.render( scene, camera );
-        console.log("$$$$$$");
-
-			}
-
-      animate();
-
-      window.onresize = function () {
+      function onWindowResize() {
 				camera.aspect = window.innerWidth / window.innerHeight;
 				camera.updateProjectionMatrix();
 
 				renderer.setSize( window.innerWidth, window.innerHeight );
 
-			};
+			}
+
+      window.addEventListener( 'resize', onWindowResize, false );
+
+      function animate() {
+        requestAnimationFrame( animate );
+
+        stats.update();
+
+        var delta = clock.getDelta();
+        controls.update( delta );
+
+        renderer.render( scene, camera );
+        // console.log("$$$$$$");
+
+      }
+
+      init();
+      animate();
 
 		</script>
 
